@@ -1,9 +1,9 @@
 /*	Author: rdudh001
  *      Partner(s) Name: None
  *	Lab Section: 022
- *	Assignment: Lab #2  Exercise #1
+ *	Assignment: Lab #2  Exercise #2
  *	Exercise Description: [optional - include for your own benefit]
- *      Garage open at night
+ *      Output available parking spots on Port C
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  */
@@ -15,24 +15,21 @@
 
 int main(void) {
 	DDRA = 0x00; PORTA = 0xFF; // Configure port A's 8 pins as inputs
-	DDRB = 0xFF; PORTB = 0x00; // Configure port B's 8 pins as outputs, initialize to 0s
-	unsigned char pa0 = 0x00; // Temporary variable to hold the value of B
-	unsigned char pa1 = 0x00; // Temporary variable to hold the value of A
+	DDRC = 0xFF; PORTC = 0x00; // Configure port B's 8 pins as outputs, initialize to 0s
+	unsigned char i; // will be used in for loop
+	unsigned char currspot = 0x00; //looks at current spot in for loop
+	unsigned char cntavail = 0x00; // will hold count of total available spots
 	while(1) {
-		// 1) Read input
-		pa0 = PINA & 0x01; //check if door is open
-		pa1 = PINA & 0x02; // check if light is sensed
-		// 2) Perform computation
-		if (pa0 && !pa1)
+		for (i = 0; i < 4; ++i)
 		{
-		    PORTB = 0x01;
+		    currspot = PINA >> i;
+		    currspot = currspot & 0x01;
+		    if (currspot == 0)
+		    {
+			cntavail = cntavail + 0x01;
+		    }
 		}
-		else
-		{
-		    PORTB = 0x00;
-		}
-		// 3) Write output
-		// PORTB = tmpB;	
+		PORTC = cntavail;	
 	}
 	return 0;
 }
